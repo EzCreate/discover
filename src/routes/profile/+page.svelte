@@ -1,6 +1,7 @@
 <script>
     import { getUsers, getProjects, getUsernameFromAuthKey, createUser, assignPfp } from '$lib/api';
-    import { authenticate } from '$lib/auth';
+    import { get } from 'svelte/store'
+    import { preferences } from '$lib/stores'
     import Swal from 'sweetalert2'
   
     let users = [];
@@ -33,7 +34,7 @@
       const response = await assignPfp(newUsername, pfpId);
       console.log(response);
     }
-    const user = authenticate();
+    const user = fetchUsername(get(preferences));
 
 
   </script>

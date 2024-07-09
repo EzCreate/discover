@@ -1,7 +1,8 @@
 <script>
     import { getUsernameFromAuthKey } from '$lib/api';
     import Swal from 'sweetalert2';
-    import { saveauthkey } from '$lib/auth';
+    import { get } from 'svelte/store'
+    import { preferences } from '$lib/stores'
    // this is done serverside now import sha256 from 'js-sha256';
   
     let newUsername = '';
@@ -28,7 +29,7 @@
         });
         newUsername = '';
         newPassword = '';
-        saveauthkey(authKey);
+        preferences.set(authkey);
       } else {
         Swal.fire({
           icon: 'error',
