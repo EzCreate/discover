@@ -46,3 +46,15 @@ export async function assignPfp(username, pfpId) {
   });
   return await response.json();
 }
+
+export async function getPfp(username) {
+  const data = { [username]: 'dosent matter what goes here' };
+  const response = await fetch(`${apiUrl}api/v1/getpfp`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
+  return await response.json();
+}

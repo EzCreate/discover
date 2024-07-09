@@ -1,42 +1,41 @@
 <script>
-    import { getUsernameFromAuthKey } from '$lib/api';
-    import Swal from 'sweetalert2';
-    import { saveauthkey } from '$lib/auth';
-   // this is done serverside now import sha256 from 'js-sha256';
+    import { getUsers, getProjects, getUsernameFromAuthKey, createUser, assignPfp } from '$lib/api';
+    import { authenticate } from '$lib/auth';
+    import Swal from 'sweetalert2'
   
+    let users = [];
+    let projects = [];
+    let username = '';
+    let authKey = '';
     let newUsername = '';
     let newPassword = '';
+    let pfpId = '';
   
-    async function fetchUsername(authKey) {
-      try {
-        const response = await getUsernameFromAuthKey(authKey);
-        return response;
-      } catch (error) {
-        console.error('Error fetching username:', error);
-        return null;
-      }
+    async function loadUsers() {
+      users = await getUsers();
     }
   
-    async function login() {
-      const authKey = `${newUsername}@${newPassword}`;
-      const username = await fetchUsername(authKey);
-      if (username === newUsername) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Login Successful',
-          text: `Welcome, ${username}!`
-        });
-        newUsername = '';
-        newPassword = '';
-        saveauthkey(authKey);
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Login Failed',
-          text: 'Invalid username or password.'
-        });
-      }
+    async function loadProjects() {
+      projects = await getProjects();
     }
+  
+    async function fetchUsername() {
+      username = await getUsernameFromAuthKey(authKey);
+    }
+  
+    async function registerUser() {
+      const response = await createUser(newUsername, newPassword);
+      Swal.fire(response);
+      loadUsers();
+    }
+  
+    async function updatePfp() {
+      const response = await assignPfp(newUsername, pfpId);
+      console.log(response);
+    }
+    const user = authenticate();
+
+
   </script>
   
   <style>
@@ -98,12 +97,13 @@
 </style>
   
   <body style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-    <h2>Sign In</h2>
-    <input bind:value={newUsername} placeholder="Username" />
-    <input bind:value={newPassword} placeholder="Password" type="password" />
-    <button on:click={login}>Sign In</button>
+    <h2>Profile</h2>
+    <img src="./pfps/1.svg" alt="pfp">
+    <p><i>If the username of you're account dosen't appear try logging in.</i></p>
+    <p>{user}</p>
+    <p>Custom profile support is still in the works, check back soon!</p>
   </body>
   <footer>
-    <a href="./signup">Sign Up</a>
+    <a href="./login">Sign In</a>
   </footer>
   
